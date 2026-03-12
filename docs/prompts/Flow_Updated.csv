@@ -1,0 +1,40 @@
+Modules,Inout,Functions,Output,Validation Criteria
+Sample documents,"1. A clean text/texts
+2. Rubric and Attributes","LLM reads samples
+Load list of sample documents
+LLM understands evaluation markers/attributes
+Returns evaluation criteria",Summarized evaluation criteria (JSON or Table),Evaluation criteria correctly reflect document attributes and goals
+Suvey content,"1. A clean text/texts
+2. Rubric and Attributes
+3. Code template", Function which adds text markers and attributes to predifined Qualtrics survey code,Generated survey in JSON format,Survey follows template and logically fits evaluation
+Validate survey,"1. Resulting code
+2. Evaluation criteria","LLM reads and understands the code
+Evaluates if it is consistent with evaluation criteria
+If it is not, fall back to start","{""validated"": 1} or {""validated"": 0}","Survey meets logic, completeness, and clarity checks (survey follows a logical order, variables outputs  and file names consistent and meaningful, labels user friendly, the output JSON or table format documented)"
+Qualtrics testing,"1. Resulting code
+2. Evaluation criteria","LLM sees preview the survey on Qualtrics to confirm that all functionalities work as expected.
+Prompt LLM: change the updated resulting code, fall back to sample documents step
+Publish the link on qualtrics",Qualtrics link,Preview functions correctly and survey displays as intended
+Prolific filters,"1. JSON of Prolific filters
+2. Evaluation criteria","LLM ingests the JSON of filters, chooses optimal filters",Optimal filters,Filters match survey requirements and audience
+Validate prolific filters,"1. JSON of Prolific filters
+2. Evaluation criteria","1. Checks if the optimal filters are indeed in the JSON - script
+2. Are the filters indeed optimal? - opinion validated by other LLM
+Else: Return to prolific filters with prompt to LLM to change",,"Prolific filters not in JSON, not optimal"
+Prolific Recruitment,"1. Optimal Prolific filters
+2. Prolific sample code
+3. Qualtrics link 
+4. Prolific parameters",Modify the sample code to incorporate the selected filters and parameters. Include Qualtrics link.,Resulting updated code,Code is deployable and produces expected outcome
+Prolific validation,"1. Updated code
+2. Evaluation criteria","Validate that prolific code works
+If code does not work: check for the reason, revert to update that caused, with prompt to LLM at that step of the error
+If code does not deploy due to error in filters: go back to Prolific filters, fix with error via prompt to LLM with the JSON of filters, ex: if there is no one applicable with the given combination, the LLM must chose a different combination
+If code does not deploy due to code error: go back to Prolific recruitment, with prompt to LLM of error","{""validated"": 1} or {""validated"": 0}",Recruitment script produces correct filtered link
+Deploy,Updated code,Deploy survey via prolific using updated code,Prolific survey,
+Monitor and log,Prolific,"Continuously monitor the systems:  
+Check survey responses on Qualtrics for any delivery or logic issues.
+If error: prompt LLM given Error message to determine where the error occured, go back into code and fix at that step. Trigger alerts for manual review
+Track recruitment responses on Prolific. Automatically create graphs. Prompt LLM to determine if early stopping is viable","Store the logs with time stamps of when something occurs. If there is an error or issue, store it and mark it, else continue",
+Reporting,"1. Validated survey and recruitment data
+2. Evaluation output","Generate summary and output reports
+Export to PDF and JSON",Client-ready report (PDF/JSON),"Report is complete, well-structured, and consumable"
