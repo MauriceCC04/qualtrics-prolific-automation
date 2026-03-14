@@ -1,44 +1,42 @@
-# Benchmarking LLM Evaluative Performance: Development of a Pipeline for Automatic Validation
 # Qualtrics × Prolific SurveyOps Automation
 
-Prototype tooling for automating parts of a research workflow across **Qualtrics** and **Prolific**: creating surveys, generating participant-study drafts, exporting filter metadata, and supporting rubric-based LLM evaluation experiments.
+Prototype tooling for automating parts of a research workflow across **Qualtrics** and **Prolific**: creating surveys, generating participant-study drafts, exporting filter metadata, and supporting rubric-based evaluation workflows.
 
-This repository comes from my bachelor thesis work. The goal is to make repetitive survey/study setup more reproducible, auditable, and scriptable.
+This repository comes from my bachelor thesis work. The main goal is to make repetitive survey and participant-study setup more reproducible, auditable, and scriptable.
 
 ---
 
 ## What this project does
 
 ### Qualtrics automation
-- Create surveys programmatically
-- Add blocks and questions
-- publish / activate survey flows
+- create surveys programmatically
+- add blocks and questions
+- support repeatable survey setup without relying entirely on manual UI work
 
 ### Prolific automation
-- Create study drafts linked to external Qualtrics surveys
+- create study drafts linked to external Qualtrics surveys
 - prepare launch-ready payloads
-- support draft-first workflows before spending budget on live recruitment
+- support a safer draft-first workflow before publishing paid studies
 
 ### Sampling support
-- Export available Prolific filters to JSON / CSV
-- Generate example filter payloads for faster study setup
+- export available Prolific filters
+- generate reusable filter payload examples for study targeting
 
-### Evaluation assets
-- Store rubric / marker dictionaries used in structured evaluation workflows
-- support LLM-assisted scoring and validation experiments
+### Evaluation support
+- store rubric and marker assets used in structured evaluation workflows
+- support experiments involving rubric-based or LLM-assisted scoring
 
 ---
 
 ## Why this project matters
 
-Survey and participant-study setup often involves repetitive UI work, manual copying, and fragile configuration steps. That is slow, hard to audit, and easy to get wrong.
+Survey and participant-study setup often involves repetitive UI work, manual copying, and fragile configuration steps. That process is slow, hard to audit, and easy to get wrong.
 
-This project turns that process into a semi-automated workflow with:
-
-- API-driven setup
-- reusable payload generation
-- exportable artifacts
-- safer draft-first execution
+This project turns parts of that workflow into reusable scripts and notebook-based prototypes, making it easier to:
+- standardize setup steps
+- inspect generated artifacts
+- reuse filtering logic
+- reduce avoidable mistakes before launching a study
 
 ---
 
@@ -47,12 +45,24 @@ This project turns that process into a semi-automated workflow with:
 ```text
 .
 ├── docs/
-│   ├── prompts/            # prompt assets, workflow notes, and supporting docs
-│   └── reference/          # papers, slides, and background materials
-├── notebooks/              # notebook-first prototypes for survey/study workflows
-├── outputs/                # generated artifacts, such as Prolific filter exports
-├── report/                 # thesis PDF and source archive
-├── scripts/                # Python utilities and workflow scripts
+│   ├── prompts/
+│   └── reference/
+├── notebooks/
+│   ├── Qualtrics_w_Prolific.ipynb
+│   ├── ai_agents_flow_full_task.ipynb
+│   ├── qualtrics.ipynb
+│   └── test.ipynb
+├── outputs/
+│   └── prolific_filters.json
+├── report/
+├── scripts/
+│   ├── create_studies.py
+│   ├── definitions.py
+│   ├── filter_examples.py
+│   ├── get_all_filters.py
+│   ├── marker_subrubrics.py
+│   ├── markers.py
+│   └── qualtrics_w_prolific.py
 └── README.md
 ````
 
@@ -62,19 +72,19 @@ This project turns that process into a semi-automated workflow with:
 
 ### 1. Qualtrics survey setup
 
-Use the Qualtrics API to create and configure surveys programmatically rather than repeating UI steps by hand.
+Use the Qualtrics API to create and configure surveys programmatically rather than repeating the same UI steps by hand.
 
 ### 2. Qualtrics → Prolific handoff
 
-Prepare an external-study flow where a Qualtrics survey is used as the participant-facing instrument and Prolific handles recruitment.
+Prepare an external-study flow where Qualtrics is used as the participant-facing survey and Prolific handles recruitment.
 
 ### 3. Prolific filter export and payload generation
 
 Export available filtering metadata and generate reusable payloads for study targeting.
 
-### 4. Rubric / evaluation support
+### 4. Rubric and evaluation support
 
-Store and reuse structured assets for evaluation experiments involving LLM-generated ratings or rubric-driven prompts.
+Store and reuse structured assets for evaluation experiments involving rubric-driven prompts or LLM-assisted scoring.
 
 ---
 
@@ -104,22 +114,24 @@ pip install openai
 
 ## Configuration
 
-You will need credentials for the APIs you plan to use:
+You will need credentials for the APIs you plan to use.
 
-* **Qualtrics**
+### Qualtrics
 
-  * datacenter ID
-  * API token
-* **Prolific**
+* datacenter ID
+* API token
 
-  * API token
-* **OpenAI** *(optional)*
+### Prolific
 
-  * API key
+* API token
 
-Avoid hardcoding secrets in notebooks or scripts. Prefer environment variables or a local `.env` file that is excluded from version control.
+### OpenAI (optional)
 
-### Example variables
+* API key
+
+Avoid hardcoding secrets in notebooks or scripts. Prefer environment variables or a local `.env` file excluded from version control.
+
+### Example environment variables
 
 ```bash
 export QUALTRICS_DATACENTER_ID="..."
@@ -140,27 +152,25 @@ jupyter lab
 
 Recommended notebooks:
 
-* `notebooks/qualtrics.ipynb` — Qualtrics workflow
+* `notebooks/qualtrics.ipynb` — Qualtrics workflow prototype
 * `notebooks/Qualtrics_w_Prolific.ipynb` — end-to-end survey-to-study draft flow
 * `notebooks/ai_agents_flow_full_task.ipynb` — prototype LLM-assisted workflow experiments
 
 ### Option B: Run utility scripts
 
-Some filenames may require quotes when run from the shell.
-
 #### Export Prolific filters
 
 ```bash
-python "scripts/get_all_filters.py"
+python scripts/get_all_filters.py
 ```
 
 #### Create Prolific study drafts
 
 ```bash
-python "scripts/create_studies.py"
+python scripts/create_studies.py
 ```
 
-#### Run the exported end-to-end workflow script
+#### Run the end-to-end workflow script
 
 ```bash
 python scripts/qualtrics_w_prolific.py
@@ -172,10 +182,9 @@ python scripts/qualtrics_w_prolific.py
 
 Generated artifacts are written to `outputs/`.
 
-Examples include:
+Example:
 
 * `outputs/prolific_filters.json`
-* `outputs/prolific_filters.csv`
 
 These outputs make the workflow easier to inspect, reuse, and debug.
 
@@ -189,16 +198,21 @@ Recommended workflow:
 
 1. create drafts first
 2. inspect payloads carefully
-3. verify workspace / account settings
+3. verify account and workspace settings
 4. publish only when confident
 
-This reduces the risk of accidentally triggering recruitment spend.
+This reduces the risk of accidental recruitment spend.
 
 ---
 
-## Thesis report
+## Thesis context
 
-The `report/` folder contains the thesis document and supporting archive:
+This repository was developed as part of my bachelor thesis work on workflow automation and evaluation support for survey-based research operations.
 
-* `report/thesis.pdf`
-* `report/thesis.zip`
+The `report/` folder contains the thesis-related material and supporting files.
+
+---
+
+## Summary
+
+This repo is best understood as a **workflow automation / research tooling project**, not a polished Python package. Its value is in showing how survey setup, study creation, filtering, and evaluation support can be scripted and made more reproducible across Qualtrics and Prolific.
