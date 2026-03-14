@@ -1,4 +1,4 @@
-# Qualtrics × Prolific SurveyOps Automation
+# Benchmarking LLM Evaluative Performance: Development of a Pipeline for Automatic Validation
 
 Prototype tooling for automating parts of a research workflow across **Qualtrics** and **Prolific**: creating surveys, generating participant-study drafts, exporting filter metadata, and supporting rubric-based LLM evaluation experiments.
 
@@ -42,8 +42,6 @@ This project shows how to turn that process into a semi-automated workflow with:
 
 ## Repository structure
 
-```text
-.
 ├── docs/
 │   ├── prompts/            # prompt assets, workflow notes, and supporting docs
 │   └── reference/          # papers, slides, and background materials
@@ -65,13 +63,19 @@ Store and reuse structured assets for evaluation experiments involving LLM-gener
 
 Quickstart
 Create a virtual environment
+```bash
 python -m venv .venv
 source .venv/bin/activate   # macOS/Linux
 # .venv\Scripts\Activate.ps1   # Windows PowerShell
+```
 Install dependencies
+```bash
 pip install requests jupyter
+```
 Optional, only for notebooks or scripts that call OpenAI:
+```bash
 pip install openai
+```
 
 Configuration
 You will need credentials for the APIs you plan to use:
@@ -84,14 +88,17 @@ You will need credentials for the APIs you plan to use:
 	◦	API key
 Avoid hardcoding secrets in notebooks or scripts. Prefer environment variables or a local .env file that is excluded from version control.
 Example variables:
+```bash
 export QUALTRICS_DATACENTER_ID="..."
 export QUALTRICS_API_TOKEN="..."
 export PROLIFIC_API_TOKEN="..."
 export OPENAI_API_KEY="..."
-
+```
 How to run
 Option A: Explore the workflow in notebooks
+```bash
 jupyter lab
+```
 Recommended notebooks:
 	•	notebooks/qualtrics.ipynb — Qualtrics workflow
 	•	notebooks/Qualtrics_w_Prolific.ipynb — end-to-end survey-to-study draft flow
@@ -125,5 +132,3 @@ Thesis report
 The report/ folder contains the thesis document and supporting archive:
 	•	report/thesis.pdf
 	•	report/thesis.zip
-
-```
